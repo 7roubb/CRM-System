@@ -1,9 +1,10 @@
 ﻿
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CRM.Models;
+using CRM.Dto.Requests;
+using CRM.Dto.Responses;
 
-namespace CRM.Users
+namespace CRM.Services.IServices
 {
     public interface IUserService
     {
@@ -12,5 +13,6 @@ namespace CRM.Users
         Task<UserResponseDTO> CreateAsync(UserRequestDTO dto);
         Task<UserResponseDTO> UpdateAsync(int id, UserRequestDTO dto);
         Task DeleteAsync(int id);
+        Task<bool> ChangeRole(int UserId, string RoleName);
     }
 }

@@ -1,6 +1,9 @@
 ﻿using CRM.Config;
-using CRM.Models;
-using CRM.Users;
+using CRM.Dto.Requests;
+using CRM.Dto.Responses;
+using CRM.Services;
+using CRM.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Net;
@@ -10,6 +13,7 @@ namespace CRM.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Admin")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -89,7 +93,14 @@ namespace CRM.Controllers
         public async Task<ActionResult<ApiResponse<string>>> Delete(int id)
         {
             await _userService.DeleteAsync(id);
+
             return ApiResponse<string>.Success("User deleted successfully", HttpStatusCode.OK);
+        }
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> ChangeRole([FromRoute] int UserId, [FromQuery] string RoleName)
+        {
+            var result= await _userService.ChangeRole(UserId, RoleName);
+            return Ok(result);
         }
     }
 }

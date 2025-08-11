@@ -9,15 +9,18 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using CRM.Services.IServices;
+using CRM.Dto.Requests;
+using CRM.Dto.Responses;
 
-namespace CRM.Users
+namespace CRM.Services
 {
     public class UserService : IUserService
     {
-        private readonly CRMDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly ILogger<UserService> _logger;
 
-        public UserService(CRMDbContext context, ILogger<UserService> logger)
+        public UserService(ApplicationDbContext context, ILogger<UserService> logger)
         {
             _context = context;
             _logger = logger;
@@ -44,8 +47,8 @@ namespace CRM.Users
             if (await _context.Users.AnyAsync(u => u.Email == dto.Email))
                 throw new UserAlreadyExistsException($"Email '{dto.Email}' is already registered.");
 
-            if (!IsValidRole(dto.Role))
-                throw new InvalidRoleException($"Role '{dto.Role}' is not valid.");
+            if (!IsValidRole(dto.RoleName))
+                throw new InvalidRoleException($"Role '{dto.RoleName}' is not valid.");
 
             string passwordHash = HashPassword(dto.Password);
 
@@ -63,8 +66,8 @@ namespace CRM.Users
             if (user == null)
                 throw new UserNotFoundException($"User with ID {id} not found.");
 
-            if (!IsValidRole(dto.Role))
-                throw new InvalidRoleException($"Role '{dto.Role}' is not valid.");
+            if (!IsValidRole(dto.RoleName))
+                throw new InvalidRoleException($"Role '{dto.RoleName}' is not valid.");
 
             string? passwordHash = !string.IsNullOrWhiteSpace(dto.Password)
                 ? HashPassword(dto.Password)
@@ -101,6 +104,21 @@ namespace CRM.Users
         {
             var allowedRoles = new[] { "Admin", "Sales", "Support", "User" };
             return allowedRoles.Contains(role);
+        }
+        public async Task<bool>ChangeRole(int UserId, string rolename)
+        {
+            var user= await _context.Users.FindAsync(UserId);
+            if(user is not null)
+            {
+                var Role = await _context.Roles.FirstOrDefaultAsync(u => u.RoleName == rolename);
+               if(Role is not null)
+                {
+                    user.UserId = Role.RoleId;
+                }
+               return true;
+            }
+            else
+                return false;
         }
     }
 }

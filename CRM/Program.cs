@@ -1,11 +1,15 @@
 ﻿using CRM.Data;
-using CRM.Users;
+using CRM.Services;
+using CRM.Services.IServices;
+using CRM.Uitlity.DBInitlizer;
+using CRM.Utility.DBInitializer;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<IDBInitlizer, DBInitlizerService>();
 
 // تسجيل DbContext
-builder.Services.AddDbContext<CRMDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // تسجيل الخدمات
@@ -24,11 +28,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<CRM.Middleware.ExceptionHandlingMiddleware>();
+//app.UseMiddleware<CRM.Middleware.ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+using var scope = app.Services.CreateScope();
+var dbInitializer = scope.ServiceProvider.GetRequiredService<IDBInitlizer>();
+await dbInitializer.initlizerAsync();
+
 
 app.MapControllers();
 

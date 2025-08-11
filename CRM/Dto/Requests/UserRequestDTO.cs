@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CRM.Models
+namespace CRM.Dto.Requests
 {
     public class UserRequestDTO
     {
@@ -19,7 +19,7 @@ namespace CRM.Models
         public string Password { get; set; }  // Plain-text password (will be hashed)
 
         [MaxLength(50, ErrorMessage = "Role cannot exceed 50 characters")]
-        public string Role { get; set; } = "User";  // Default role
+       public string RoleName { get; set; }
 
         public bool IsActive { get; set; } = true;
     }

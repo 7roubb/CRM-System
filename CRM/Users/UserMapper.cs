@@ -1,16 +1,21 @@
-﻿namespace CRM.Models
+﻿using CRM.Dto.Requests;
+using CRM.Dto.Responses;
+using CRM.Model;
+
+namespace CRM.Models
 {
     public static class UserMapper
     {
         // Map UserRequestDTO + PasswordHash -> User (for creation)
         public static User ToUser(this UserRequestDTO dto, string passwordHash)
         {
+            
             return new User
             {
                 Username = dto.Username,
                 Email = dto.Email,
                 PasswordHash = passwordHash,  // Hashed password from service layer
-                Role = dto.Role,
+                RoleName = dto.RoleName,
                 IsActive = dto.IsActive,
                 CreatedAt = DateTime.UtcNow,  // Auto-set creation time
                 LastLogin = null              // Initialize as null
@@ -25,7 +30,7 @@
                 UserId = user.UserId,
                 Username = user.Username,
                 Email = user.Email,
-                Role = user.Role,
+                RoleName = user.RoleName,
                 IsActive = user.IsActive,
                 CreatedAt = user.CreatedAt,
                 LastLogin = user.LastLogin
@@ -37,7 +42,7 @@
         {
             user.Username = dto.Username;
             user.Email = dto.Email;
-            user.Role = dto.Role;
+            user.RoleName = dto.RoleName;
             user.IsActive = dto.IsActive;
 
             // Only update password if provided
