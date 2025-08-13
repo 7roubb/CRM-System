@@ -1,8 +1,6 @@
 ﻿using CRM.Dto.Requests;
 using CRM.Dto.Responses;
 using CRM.Model;
-using System;
-
 namespace CRM.Models
 {
     public static class ContactMapper

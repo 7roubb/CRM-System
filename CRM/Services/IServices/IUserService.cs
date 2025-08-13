@@ -1,7 +1,4 @@
-﻿
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using CRM.Dto.Requests;
+﻿using CRM.Dto.Requests;
 using CRM.Dto.Responses;
 
 namespace CRM.Services.IServices

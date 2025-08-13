@@ -1,8 +1,5 @@
 ﻿using global::CRM.Dto.Requests;
 using global::CRM.Dto.Responses;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 namespace CRM.Services.IServices
 
 {

@@ -1,15 +1,11 @@
-﻿// ContactService.cs
-using CRM.Data;
+﻿using CRM.Data;
 using CRM.Dto.Requests;
 using CRM.Dto.Responses;
 using CRM.Exceptions;
-using CRM.Model;
 using CRM.Models;
 using CRM.Services.IServices;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace CRM.Services
 {
@@ -39,7 +35,6 @@ namespace CRM.Services
 
         public async Task<ContactResponse> CreateContactAsync(ContactRequest contactRequest)
         {
-            // Check for duplicate email
             if (await _context.Contact.AnyAsync(c => c.Email == contactRequest.Email))
                 throw new ContactAlreadyExistsException(contactRequest.Email);
 
@@ -55,7 +50,6 @@ namespace CRM.Services
             if (contact == null)
                 throw new ContactNotFoundException(id);
 
-            // Check for duplicate email if changing
             if (contact.Email != contactRequest.Email &&
                 await _context.Contact.AnyAsync(c => c.Email == contactRequest.Email))
             {
