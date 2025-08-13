@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CRM.Migrations
 {
-    public partial class iniatial : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -131,7 +131,7 @@ namespace CRM.Migrations
                     Contact_Middle = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Contact_Last = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Contact_Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Date_of_Initial_Contact = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Date_of_Initial_Contact = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Company = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address_Street_1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address_Street_2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -149,7 +149,7 @@ namespace CRM.Migrations
                     Contact_StatusId = table.Column<int>(type: "int", nullable: false),
                     Project_Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Proposal_Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Proposal_Date = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Proposal_Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Deliverables = table.Column<float>(type: "real", nullable: false)
                 },
                 constraints: table =>

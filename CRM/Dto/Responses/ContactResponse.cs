@@ -8,7 +8,7 @@
         public string Contact_Middle { get; set; }
         public string Contact_Last { get; set; }
         public string Contact_Type { get; set; }
-        public string Date_of_Initial_Contact { get; set; }
+        public DateTime Date_of_Initial_Contact { get; set; }
         public string Company { get; set; }
         public string Address_Street_1 { get; set; }
         public string Address_Street_2 { get; set; }
@@ -24,7 +24,7 @@
         public int Contact_Status_ID { get; set; }
         public string Project_Type { get; set; }
         public string Proposal_Description { get; set; }
-        public string Proposal_Date { get; set; }
+        public DateTime Proposal_Date { get; set; }
         public float Deliverables { get; set; }
     }
 }

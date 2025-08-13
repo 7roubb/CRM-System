@@ -1,10 +1,7 @@
 ﻿using CRM.Dto.Requests;
-using CRM.Dto.Responses;
-using CRM.Services;
 using CRM.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace CRM.Controllers
 {

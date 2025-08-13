@@ -23,7 +23,6 @@ namespace CRM.Controllers
             _userService = userService;
         }
 
-        // GET: api/User
         [HttpGet]
         public async Task<ActionResult<ApiResponse<IEnumerable<UserResponseDTO>>>> GetAll()
         {
@@ -31,7 +30,6 @@ namespace CRM.Controllers
             return ApiResponse<IEnumerable<UserResponseDTO>>.Success(users, HttpStatusCode.OK, "Users retrieved successfully");
         }
 
-        // GET: api/User/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<ApiResponse<UserResponseDTO>>> GetById(int id)
         {
@@ -39,7 +37,6 @@ namespace CRM.Controllers
             return ApiResponse<UserResponseDTO>.Success(user, HttpStatusCode.OK, "User retrieved successfully");
         }
 
-        // POST: api/User
         [HttpPost]
         public async Task<ActionResult<ApiResponse<UserResponseDTO>>> Create(UserRequestDTO dto)
         {
@@ -64,7 +61,6 @@ namespace CRM.Controllers
                 ApiResponse<UserResponseDTO>.Success(created, HttpStatusCode.Created, "User created successfully"));
         }
 
-        // PUT: api/User/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult<ApiResponse<UserResponseDTO>>> Update(int id, UserRequestDTO dto)
         {

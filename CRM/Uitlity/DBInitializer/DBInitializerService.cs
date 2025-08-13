@@ -3,15 +3,15 @@ using CRM.Model;
 using CRM.Data;
 using System.Text;
 using System.Security.Cryptography;
-using CRM.Uitlity.DBInitlizer;
+using CRM.Uitlity.DBInitializer;
 
 namespace CRM.Utility.DBInitializer
 {
-    public class DBInitlizerService : IDBInitlizer
+    public class DBInitializerService : IDBInitializer
     {
         private readonly ApplicationDbContext context;
 
-        public DBInitlizerService(ApplicationDbContext context)
+        public DBInitializerService(ApplicationDbContext context)
         {
             this.context = context;
         }

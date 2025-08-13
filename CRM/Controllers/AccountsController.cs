@@ -1,9 +1,9 @@
-﻿using CRM.Dto.Requests;
+﻿using CRM.Config;
+using CRM.Dto.Requests;
 using CRM.Dto.Responses;
-using CRM.Services;
 using CRM.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+using System.Net;
 
 namespace CRM.Controllers
 {
@@ -14,31 +14,20 @@ namespace CRM.Controllers
         private readonly IAccountService _accountService;
 
         public AccountsController(IAccountService accountService)
-        {
-            _accountService = accountService;
-        }
+            => _accountService = accountService;
 
-     
         [HttpPost("register")]
-        [ProducesResponseType(typeof(RegisterResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest dto)
+        public async Task<ApiResponse<RegisterResponse>> Register([FromBody] RegisterRequest dto)
         {
-            var response = await _accountService.RegisterAsync(dto);
-            return Ok(response);
+            var result = await _accountService.RegisterAsync(dto);
+            return ApiResponse<RegisterResponse>.Success(result, HttpStatusCode.OK, "Registration successful");
         }
 
-      
         [HttpPost("login")]
-        [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<ApiResponse<LoginResponse>> Login([FromBody] LoginRequest request)
         {
-            var response = await _accountService.LoginAsync(request);
-            return Ok(response);
+            var result = await _accountService.LoginAsync(request);
+            return ApiResponse<LoginResponse>.Success(result, HttpStatusCode.OK, "Login successful");
         }
     }
 }

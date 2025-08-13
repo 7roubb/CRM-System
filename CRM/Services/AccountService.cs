@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using CRM.Services.IServices;
+using Microsoft.Extensions.Options;
 
 namespace CRM.Services
 {
@@ -20,10 +21,10 @@ namespace CRM.Services
         private readonly ApplicationDbContext _context;
         private readonly JwtSettings _jwtSettings;
 
-        public AccountService(ApplicationDbContext context, JwtSettings jwtSettings)
+        public AccountService(ApplicationDbContext context, IOptions<JwtSettings> jwtSettings)
         {
             _context = context;
-            _jwtSettings = jwtSettings;
+            _jwtSettings = jwtSettings.Value;
         }
 
         public async Task<RegisterResponse> RegisterAsync(RegisterRequest dto)

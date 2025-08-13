@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿// ExceptionHandler.cs
+using CRM.Exceptions;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace CRM.Exceptions
+namespace CRM.Middleware
 {
     public static class ExceptionHandler
     {
@@ -19,54 +21,52 @@ namespace CRM.Exceptions
                         var problemDetails = new ProblemDetails();
                         var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
 
-                        // Log the exception
-                        logger.LogError(exception, "An unhandled exception occurred: {Message}", exception.Message);
-
-                        // Handle specific exception types
                         switch (exception)
                         {
                             case UserNotFoundException:
-                            case ResourceNotFoundException:
+                            case ContactNotFoundException:
                                 problemDetails.Status = (int)HttpStatusCode.NotFound;
                                 problemDetails.Title = "Resource Not Found";
+                                logger.LogWarning(exception, "Resource not found: {Message}", exception.Message);
                                 break;
 
                             case UserAlreadyExistsException:
+                            case ContactAlreadyExistsException: 
                                 problemDetails.Status = (int)HttpStatusCode.Conflict;
                                 problemDetails.Title = "Duplicate Resource";
+                                logger.LogWarning(exception, "Duplicate resource: {Message}", exception.Message);
                                 break;
 
+                            case AuthenticationFailedException:
                             case InvalidRoleException:
                             case ValidationException:
-                            case AuthenticationFailedException:
                                 problemDetails.Status = (int)HttpStatusCode.BadRequest;
                                 problemDetails.Title = "Invalid Request";
+                                logger.LogWarning(exception, "Validation error: {Message}", exception.Message);
                                 break;
 
                             case ConfigurationException:
                             case DatabaseOperationException:
-                                problemDetails.Status = (int)HttpStatusCode.InternalServerError;
-                                problemDetails.Title = "Server Error";
-                                break;
-
+                          
                             default:
                                 problemDetails.Status = (int)HttpStatusCode.InternalServerError;
                                 problemDetails.Title = "Internal Server Error";
+                                logger.LogError(exception, "Unhandled exception: {Message}", exception.Message);
                                 break;
                         }
 
                         problemDetails.Detail = exception.Message;
+
                         context.Response.StatusCode = problemDetails.Status.Value;
                         context.Response.ContentType = "application/problem+json";
 
-                        // Add additional details for development environment
                         var env = context.RequestServices.GetRequiredService<IWebHostEnvironment>();
                         if (env.IsDevelopment())
                         {
                             problemDetails.Extensions["exception"] = new
                             {
                                 Type = exception.GetType().Name,
-                                StackTrace = exception.StackTrace
+                                exception.StackTrace
                             };
                         }
 

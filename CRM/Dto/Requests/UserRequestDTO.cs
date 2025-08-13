@@ -16,7 +16,7 @@ namespace CRM.Dto.Requests
         [Required(ErrorMessage = "Password is required")]
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters")]
         [DataType(DataType.Password)]
-        public string Password { get; set; }  // Plain-text password (will be hashed)
+        public string Password { get; set; }  
 
         [MaxLength(50, ErrorMessage = "Role cannot exceed 50 characters")]
        public string RoleName { get; set; }

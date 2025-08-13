@@ -1,9 +1,10 @@
-﻿using CRM.Data;
+﻿// ContactService.cs
+using CRM.Data;
 using CRM.Dto.Requests;
 using CRM.Dto.Responses;
+using CRM.Exceptions;
 using CRM.Model;
 using CRM.Models;
-using CRM.Services;
 using CRM.Services.IServices;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -30,11 +31,18 @@ namespace CRM.Services
         public async Task<ContactResponse> GetContactByIdAsync(int id)
         {
             var contact = await _context.Contact.FindAsync(id);
-            return contact?.ToContactResponse();
+            if (contact == null)
+                throw new ContactNotFoundException(id);
+
+            return contact.ToContactResponse();
         }
 
         public async Task<ContactResponse> CreateContactAsync(ContactRequest contactRequest)
         {
+            // Check for duplicate email
+            if (await _context.Contact.AnyAsync(c => c.Email == contactRequest.Email))
+                throw new ContactAlreadyExistsException(contactRequest.Email);
+
             var contact = contactRequest.ToContact();
             _context.Contact.Add(contact);
             await _context.SaveChangesAsync();
@@ -44,7 +52,15 @@ namespace CRM.Services
         public async Task UpdateContactAsync(int id, ContactRequest contactRequest)
         {
             var contact = await _context.Contact.FindAsync(id);
-            if (contact == null) return;
+            if (contact == null)
+                throw new ContactNotFoundException(id);
+
+            // Check for duplicate email if changing
+            if (contact.Email != contactRequest.Email &&
+                await _context.Contact.AnyAsync(c => c.Email == contactRequest.Email))
+            {
+                throw new ContactAlreadyExistsException(contactRequest.Email);
+            }
 
             contact.UpdateFromContactRequest(contactRequest);
             _context.Contact.Update(contact);
@@ -54,7 +70,8 @@ namespace CRM.Services
         public async Task DeleteContactAsync(int id)
         {
             var contact = await _context.Contact.FindAsync(id);
-            if (contact == null) return;
+            if (contact == null)
+                throw new ContactNotFoundException(id);
 
             _context.Contact.Remove(contact);
             await _context.SaveChangesAsync();

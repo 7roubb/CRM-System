@@ -1,4 +1,5 @@
-﻿using System;
+﻿// CRM.Exceptions.cs
+using System;
 
 namespace CRM.Exceptions
 {
@@ -26,6 +27,7 @@ namespace CRM.Exceptions
     {
         public DatabaseOperationException(string message) : base(message) { }
     }
+
     public class AuthenticationFailedException : Exception
     {
         public AuthenticationFailedException(string message) : base(message) { }
@@ -39,5 +41,16 @@ namespace CRM.Exceptions
     public class ConfigurationException : Exception
     {
         public ConfigurationException(string message) : base(message) { }
+    }
+
+    // New exceptions for ContactService
+    public class ContactNotFoundException : ResourceNotFoundException
+    {
+        public ContactNotFoundException(int id) : base($"Contact with ID {id} not found") { }
+    }
+
+    public class ContactAlreadyExistsException : Exception
+    {
+        public ContactAlreadyExistsException(string email) : base($"Contact with email '{email}' already exists") { }
     }
 }

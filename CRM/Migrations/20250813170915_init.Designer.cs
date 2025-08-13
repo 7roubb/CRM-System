@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CRM.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250808170917_iniatial")]
-    partial class iniatial
+    [Migration("20250813170915_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -86,9 +86,8 @@ namespace CRM.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Date_of_Initial_Contact")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Date_of_Initial_Contact")
+                        .HasColumnType("datetime2");
 
                     b.Property<float>("Deliverables")
                         .HasColumnType("real");
@@ -109,9 +108,8 @@ namespace CRM.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Proposal_Date")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Proposal_Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Proposal_Description")
                         .IsRequired()

@@ -84,9 +84,8 @@ namespace CRM.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Date_of_Initial_Contact")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Date_of_Initial_Contact")
+                        .HasColumnType("datetime2");
 
                     b.Property<float>("Deliverables")
                         .HasColumnType("real");
@@ -107,9 +106,8 @@ namespace CRM.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Proposal_Date")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Proposal_Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Proposal_Description")
                         .IsRequired()
