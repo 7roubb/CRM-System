@@ -68,7 +68,7 @@ namespace CRM.Controllers
         public async Task<IActionResult> Login([FromBody] LogInRequest request)
         {
             var user = await context.Users
-                .Include(u => u.Role) // تضمين الدور
+                .Include(u => u.Role)   
                 .FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (user == null)

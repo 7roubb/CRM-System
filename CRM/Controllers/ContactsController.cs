@@ -1,12 +1,10 @@
-﻿using CRM.Data;
-using CRM.Dto.Requests;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Mapster;
+﻿using CRM.Dto.Requests;
 using CRM.Dto.Responses;
-using CRM.Model;
+using CRM.Services;
+using CRM.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace CRM.Controllers
 {
@@ -14,78 +12,75 @@ namespace CRM.Controllers
     [ApiController]
     public class ContactsController : ControllerBase
     {
-        private readonly ApplicationDbContext context;
+        private readonly IContactService _contactService;
 
-        public ContactsController(ApplicationDbContext context)
+        public ContactsController(IContactService contactService)
         {
-            this.context = context;
+            _contactService = contactService;
         }
+
         [HttpGet]
         [Authorize(Roles = "Admin,Sales,Support,User")]
         public async Task<IActionResult> GetAll()
         {
-            var Contacts = await context.Contact.ToListAsync();
-            return Ok(Contacts);
+            var contacts = await _contactService.GetAllContactsAsync();
+            return Ok(contacts);
         }
+
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin,Sales")]
-        public async Task <IActionResult> GetOne([FromRoute]int id)
+        public async Task<IActionResult> GetOne([FromRoute] int id)
         {
-            var contact = await context.Contact.FirstOrDefaultAsync(c => c.Id == id);
+            var contact = await _contactService.GetContactByIdAsync(id);
             if (contact == null)
             {
-                return NotFound(new { message = "contact not found" });
+                return NotFound(new { message = "Contact not found" });
             }
             return Ok(contact);
-        
         }
+
         [HttpPost]
         [Authorize(Roles = "Admin,Sales")]
-        public async Task <IActionResult> Add(ContactRequest contactRequest)
+        public async Task<IActionResult> Add([FromBody] ContactRequest contactRequest)
         {
-            var contact = contactRequest.Adapt<Contact>();
-            await context.Contact.AddAsync(contact);
-            await context.SaveChangesAsync();
+            var contact = await _contactService.CreateContactAsync(contactRequest);
             return CreatedAtAction(nameof(GetOne), new { id = contact.Id }, contact);
         }
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Remove([FromRoute] int id)
         {
-            var contact= await context.Contact.FirstOrDefaultAsync(c=>c.Id == id);
-            if(contact == null)
+            var contact = await _contactService.GetContactByIdAsync(id);
+            if (contact == null)
             {
-                return NotFound(new { message = "contact not found" });
+                return NotFound(new { message = "Contact not found" });
             }
-            context.Contact.Remove(contact);  
-            await context.SaveChangesAsync();
-            return Ok();
 
+            await _contactService.DeleteContactAsync(id);
+            return NoContent();
         }
+
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin,Sales")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] ContactRequest contactRequest)
         {
-            var contact = await context.Contact.FirstOrDefaultAsync(c => c.Id == id);
-            if (contact == null)
+            var existingContact = await _contactService.GetContactByIdAsync(id);
+            if (existingContact == null)
             {
-                return NotFound(new { message = "contact not found" });
+                return NotFound(new { message = "Contact not found" });
             }
-            contactRequest.Adapt<Contact>();
-            await context.SaveChangesAsync();
 
-            return Ok(new { message = "Contact updated successfully" });
+            await _contactService.UpdateContactAsync(id, contactRequest);
+            return NoContent();
         }
+
         [HttpGet("by-status/{statusId}")]
         [Authorize(Roles = "Admin,Sales,Support,User")]
         public async Task<IActionResult> GetByStatusId([FromRoute] int statusId)
         {
-            var contacts = await context.Contact
-                .Include(c => c.Contact_Status)
-                .Where(c => c.Contact_Status_ID == statusId)
-                .ToListAsync();
+            var contacts = await _contactService.GetContactsByStatusIdAsync(statusId);
             return Ok(contacts);
         }
-
     }
 }

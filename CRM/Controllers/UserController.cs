@@ -88,7 +88,6 @@ namespace CRM.Controllers
             return ApiResponse<UserResponseDTO>.Success(updated, HttpStatusCode.OK, "User updated successfully");
         }
 
-        // DELETE: api/User/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiResponse<string>>> Delete(int id)
         {
