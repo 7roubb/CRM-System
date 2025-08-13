@@ -9,7 +9,7 @@ namespace CRM.Dto.Requests
         [EmailAddress]
         [Required]
         [MaxLength(255)]
-      public string Email { get; set; }
+        public string Email { get; set; }
         [Compare(nameof(Password), ErrorMessage = "passsword do not match ")]
         public string Password { get; set; }
         public string ConfirmPassword { get; set; }

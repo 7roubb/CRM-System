@@ -2,7 +2,7 @@
 
 namespace CRM.Dto.Requests
 {
-    public class LogInRequest
+    public class LoginRequest
     {
         [Required]
         [MaxLength(255)]

@@ -17,10 +17,16 @@ namespace CRM.Exceptions
                     {
                         var exception = contextFeature.Error;
                         var problemDetails = new ProblemDetails();
+                        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
 
+                        // Log the exception
+                        logger.LogError(exception, "An unhandled exception occurred: {Message}", exception.Message);
+
+                        // Handle specific exception types
                         switch (exception)
                         {
                             case UserNotFoundException:
+                            case ResourceNotFoundException:
                                 problemDetails.Status = (int)HttpStatusCode.NotFound;
                                 problemDetails.Title = "Resource Not Found";
                                 break;
@@ -32,13 +38,15 @@ namespace CRM.Exceptions
 
                             case InvalidRoleException:
                             case ValidationException:
+                            case AuthenticationFailedException:
                                 problemDetails.Status = (int)HttpStatusCode.BadRequest;
                                 problemDetails.Title = "Invalid Request";
                                 break;
 
+                            case ConfigurationException:
                             case DatabaseOperationException:
                                 problemDetails.Status = (int)HttpStatusCode.InternalServerError;
-                                problemDetails.Title = "Database Operation Failed";
+                                problemDetails.Title = "Server Error";
                                 break;
 
                             default:
@@ -50,6 +58,17 @@ namespace CRM.Exceptions
                         problemDetails.Detail = exception.Message;
                         context.Response.StatusCode = problemDetails.Status.Value;
                         context.Response.ContentType = "application/problem+json";
+
+                        // Add additional details for development environment
+                        var env = context.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                        if (env.IsDevelopment())
+                        {
+                            problemDetails.Extensions["exception"] = new
+                            {
+                                Type = exception.GetType().Name,
+                                StackTrace = exception.StackTrace
+                            };
+                        }
 
                         await context.Response.WriteAsJsonAsync(problemDetails);
                     }

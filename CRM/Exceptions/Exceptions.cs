@@ -26,4 +26,18 @@ namespace CRM.Exceptions
     {
         public DatabaseOperationException(string message) : base(message) { }
     }
+    public class AuthenticationFailedException : Exception
+    {
+        public AuthenticationFailedException(string message) : base(message) { }
+    }
+
+    public class ResourceNotFoundException : Exception
+    {
+        public ResourceNotFoundException(string message) : base(message) { }
+    }
+
+    public class ConfigurationException : Exception
+    {
+        public ConfigurationException(string message) : base(message) { }
+    }
 }
