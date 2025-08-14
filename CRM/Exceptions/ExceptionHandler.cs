@@ -1,14 +1,16 @@
-﻿// ExceptionHandler.cs
-using CRM.Exceptions;
+﻿using CRM.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CRM.Middleware
 {
     public static class ExceptionHandler
     {
-        public static void UseCustomExceptionHandler(this IApplicationBuilder app)
+        public static void UseCustomExceptionHandler(this IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseExceptionHandler(errorApp =>
             {
@@ -25,13 +27,15 @@ namespace CRM.Middleware
                         {
                             case UserNotFoundException:
                             case ContactNotFoundException:
+                            case NoteNotFoundException:
                                 problemDetails.Status = (int)HttpStatusCode.NotFound;
                                 problemDetails.Title = "Resource Not Found";
                                 logger.LogWarning(exception, "Resource not found: {Message}", exception.Message);
                                 break;
 
                             case UserAlreadyExistsException:
-                            case ContactAlreadyExistsException: 
+                            case ContactAlreadyExistsException:
+                            case NotesAlreadyExistsException:
                                 problemDetails.Status = (int)HttpStatusCode.Conflict;
                                 problemDetails.Title = "Duplicate Resource";
                                 logger.LogWarning(exception, "Duplicate resource: {Message}", exception.Message);
@@ -47,7 +51,6 @@ namespace CRM.Middleware
 
                             case ConfigurationException:
                             case DatabaseOperationException:
-                          
                             default:
                                 problemDetails.Status = (int)HttpStatusCode.InternalServerError;
                                 problemDetails.Title = "Internal Server Error";
@@ -60,7 +63,6 @@ namespace CRM.Middleware
                         context.Response.StatusCode = problemDetails.Status.Value;
                         context.Response.ContentType = "application/problem+json";
 
-                        var env = context.RequestServices.GetRequiredService<IWebHostEnvironment>();
                         if (env.IsDevelopment())
                         {
                             problemDetails.Extensions["exception"] = new
