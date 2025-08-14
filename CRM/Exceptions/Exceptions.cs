@@ -53,4 +53,17 @@ namespace CRM.Exceptions
     {
         public ContactAlreadyExistsException(string email) : base($"Contact with email '{email}' already exists") { }
     }
+<<<<<<< HEAD
+=======
+
+    public class NoteNotFoundException : ResourceNotFoundException
+    {
+        public NoteNotFoundException(string message) : base(message) { }
+    }
+
+    public class NotesAlreadyExistsException : Exception
+    {
+        public NotesAlreadyExistsException(string message) : base(message) { }
+    }
+>>>>>>> main
 }
