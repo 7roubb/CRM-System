@@ -1,28 +1,16 @@
-<<<<<<< HEAD
-﻿// ExceptionHandler.cs
 using CRM.Exceptions;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
-=======
-﻿using CRM.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
->>>>>>> main
 
 namespace CRM.Middleware
 {
     public static class ExceptionHandler
     {
-<<<<<<< HEAD
-        public static void UseCustomExceptionHandler(this IApplicationBuilder app)
-=======
         public static void UseCustomExceptionHandler(this IApplicationBuilder app, IWebHostEnvironment env)
->>>>>>> main
         {
             app.UseExceptionHandler(errorApp =>
             {
@@ -39,22 +27,15 @@ namespace CRM.Middleware
                         {
                             case UserNotFoundException:
                             case ContactNotFoundException:
-<<<<<<< HEAD
-=======
                             case NoteNotFoundException:
->>>>>>> main
                                 problemDetails.Status = (int)HttpStatusCode.NotFound;
                                 problemDetails.Title = "Resource Not Found";
                                 logger.LogWarning(exception, "Resource not found: {Message}", exception.Message);
                                 break;
 
                             case UserAlreadyExistsException:
-<<<<<<< HEAD
-                            case ContactAlreadyExistsException: 
-=======
                             case ContactAlreadyExistsException:
                             case NotesAlreadyExistsException:
->>>>>>> main
                                 problemDetails.Status = (int)HttpStatusCode.Conflict;
                                 problemDetails.Title = "Duplicate Resource";
                                 logger.LogWarning(exception, "Duplicate resource: {Message}", exception.Message);
@@ -70,10 +51,6 @@ namespace CRM.Middleware
 
                             case ConfigurationException:
                             case DatabaseOperationException:
-<<<<<<< HEAD
-                          
-=======
->>>>>>> main
                             default:
                                 problemDetails.Status = (int)HttpStatusCode.InternalServerError;
                                 problemDetails.Title = "Internal Server Error";
@@ -86,10 +63,6 @@ namespace CRM.Middleware
                         context.Response.StatusCode = problemDetails.Status.Value;
                         context.Response.ContentType = "application/problem+json";
 
-<<<<<<< HEAD
-                        var env = context.RequestServices.GetRequiredService<IWebHostEnvironment>();
-=======
->>>>>>> main
                         if (env.IsDevelopment())
                         {
                             problemDetails.Extensions["exception"] = new
@@ -105,8 +78,4 @@ namespace CRM.Middleware
             });
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> main

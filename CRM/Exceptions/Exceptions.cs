@@ -43,7 +43,6 @@ namespace CRM.Exceptions
         public ConfigurationException(string message) : base(message) { }
     }
 
-    // New exceptions for ContactService
     public class ContactNotFoundException : ResourceNotFoundException
     {
         public ContactNotFoundException(int id) : base($"Contact with ID {id} not found") { }
@@ -53,8 +52,7 @@ namespace CRM.Exceptions
     {
         public ContactAlreadyExistsException(string email) : base($"Contact with email '{email}' already exists") { }
     }
-<<<<<<< HEAD
-=======
+
 
     public class NoteNotFoundException : ResourceNotFoundException
     {
@@ -65,5 +63,5 @@ namespace CRM.Exceptions
     {
         public NotesAlreadyExistsException(string message) : base(message) { }
     }
->>>>>>> main
+
 }

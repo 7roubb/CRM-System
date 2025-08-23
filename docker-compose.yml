@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: crm-sql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    networks:
+      - crm-network
+
+  sql-init:
+    image: mcr.microsoft.com/mssql-tools
+    depends_on:
+      - sqlserver
+    volumes:
+      - ./fake_data.sql:/fake_data.sql
+    entrypoint: >
+      /bin/bash -c "
+      echo 'Waiting for SQL Server to start...' &&
+      sleep 20 &&
+      /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P 'YourStrong!Passw0rd' -d CRM -i /fake_data.sql
+      "
+    networks:
+      - crm-network
+
+  crm:
+    image: ${DOCKER_REGISTRY-}crm
+    build:
+      context: .
+      dockerfile: CRM/Dockerfile
+    depends_on:
+      - sqlserver
+      - sql-init
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=CRM;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;
+    ports:
+      - "5000:8080"
+    networks:
+      - crm-network
+
+volumes:
+  sql_data:
+
+networks:
+  crm-network:

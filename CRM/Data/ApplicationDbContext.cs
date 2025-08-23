@@ -14,9 +14,8 @@ namespace CRM.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User_Status> Users_Status { get; set; }
-<<<<<<< HEAD
-=======
+
         public DbSet<Notes> Notes { get; set; }
->>>>>>> main
+
     }
 }

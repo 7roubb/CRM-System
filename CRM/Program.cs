@@ -41,8 +41,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Use global exception handler
-app.UseCustomExceptionHandler();
+app.UseCustomExceptionHandler(app.Environment);
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
